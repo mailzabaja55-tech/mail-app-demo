@@ -3,92 +3,76 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mail — Interactive App Demo (Creator &amp; Agency)</title>
+<meta name="robots" content="noindex,nofollow">
+<title>Mail Demo — ยืนยันรหัสผ่าน</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:"Segoe UI","Tahoma","Prompt",sans-serif;background:#f7f8fc;color:#1f1d2b;line-height:1.55}
-.wrap{max-width:1060px;margin:0 auto;padding:32px 20px 56px}
-.hero{background:linear-gradient(135deg,#1f1d2b 0%,#35223c 55%,#c9306f 100%);color:#fff;border-radius:22px;padding:34px 32px;box-shadow:0 18px 44px rgba(31,29,43,.16);position:relative;overflow:hidden}
-.brand{display:inline-flex;align-items:center;gap:12px;margin-bottom:14px}
-.logo{width:46px;height:46px;border-radius:14px;background:#FF6FAE;color:#111;font-weight:900;font-size:24px;display:grid;place-items:center;box-shadow:0 6px 18px rgba(255,111,174,.38)}
-.pill{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:12.5px;font-weight:700;padding:4px 12px;border-radius:999px;margin-bottom:12px}
-.hero h1{margin:0;font-size:32px;letter-spacing:-.5px;line-height:1.2}
-.hero p{margin:10px 0 0;font-size:15.5px;opacity:.92;max-width:680px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:26px}
-.card{background:#fff;border:1px solid #e4e6ee;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 8px rgba(30,28,44,.05);transition:transform .15s,box-shadow .15s,border-color .15s}
-.card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(232,69,139,.13);border-color:#f6b6d1}
-.tag{align-self:flex-start;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
-.tag.pk{background:#fde9f2;color:#c9306f} .tag.bl{background:#e8f1ff;color:#1d55b8} .tag.gr{background:#e9f8f1;color:#146c48}
-.card h2{margin:2px 0 0;font-size:20px}
-.card p{margin:0;font-size:14px;color:#5f5d70}
-.card ul{margin:4px 0 6px 18px;padding:0;font-size:13.5px;color:#4b4a5a;line-height:1.7}
-.btn{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:#e8458b;color:#fff;font-weight:700;font-size:14.5px;padding:11px 16px;border-radius:12px;transition:background .15s}
-.btn:hover{background:#c9306f}
-.btn.sec{background:#1f1d2b} .btn.sec:hover{background:#343148}
-.btn.ghost{background:#f3f4f8;color:#1f1d2b} .btn.ghost:hover{background:#e7e9f1}
-.info{margin-top:26px;background:#fff;border:1px solid #e4e6ee;border-radius:16px;padding:18px 22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.info b{display:block;font-size:14.5px;margin-bottom:3px}
-.info span{font-size:13px;color:#6e6c7e}
-.foot{margin-top:28px;text-align:center;font-size:12.5px;color:#8a889a}
-@media(max-width:600px){.hero{padding:24px 20px}.hero h1{font-size:24px}}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;font-family:"Segoe UI","Tahoma",sans-serif;
+ background:radial-gradient(circle at 20% 15%,#3b1f43 0%,#1a1826 55%,#12111b 100%);color:#1f1d2b}
+.card{width:min(410px,100%);background:#fff;border-radius:22px;padding:30px 28px;box-shadow:0 24px 64px rgba(0,0,0,.42);text-align:center}
+.logo{width:56px;height:56px;border-radius:16px;background:#FF6FAE;color:#111;font-weight:900;font-size:28px;display:grid;place-items:center;
+ margin:0 auto 14px;box-shadow:0 8px 22px rgba(255,111,174,.38)}
+h1{margin:0;font-size:22px;letter-spacing:-.3px}
+.sub{margin:6px 0 20px;font-size:13.5px;color:#6e6c7e;line-height:1.5}
+.inp-w{position:relative;margin-bottom:12px}
+input[type=password],input[type=text]{width:100%;font:inherit;font-size:15px;padding:12px 62px 12px 14px;border:1.5px solid #d9dce6;border-radius:12px;outline:none;transition:border-color .15s}
+input:focus{border-color:#e8458b}
+.eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:#6e6c7e;font:600 12px inherit;cursor:pointer;padding:4px 6px}
+.rem{display:flex;align-items:center;gap:8px;font-size:13px;color:#5f5d70;margin:4px 0 16px;cursor:pointer;justify-content:flex-start}
+button.go{width:100%;background:#e8458b;color:#fff;border:0;border-radius:12px;padding:12px 16px;font:700 15px inherit;cursor:pointer;transition:background .15s}
+button.go:hover{background:#c9306f} button.go:disabled{opacity:.6;cursor:wait}
+.err{margin-top:12px;font-size:13px;color:#c0313a;min-height:18px}
+.foot{margin-top:16px;font-size:11.5px;color:#9a98a8}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shake .28s ease}
 </style>
 </head>
 <body>
-<div class="wrap">
- <div class="hero">
-  <div class="brand"><div class="logo">M</div><div><strong style="font-size:20px;letter-spacing:-.3px">Mail</strong><div style="font-size:12.5px;opacity:.85">All-in-One Creator &amp; Agency Marketing Suite</div></div></div>
-  <div class="pill">Interactive Live Demo · ใช้ข้อมูลสมมติทั้งหมด ไม่มีข้อมูลบัญชีจริง</div>
-  <h1>ทดลองกดใช้งานแอป Mail แบบโต้ตอบได้จริง</h1>
-  <p>รวมทุกงานการตลาดคอนเทนต์ในหน้าเดียว — ตัดคลิป, แก้คลิป, ตั้งเวลาลงคลิปหลายแพลตฟอร์ม, รวมคอมเมนต์และแชทส่วนตัว, วิเคราะห์กราฟ 16 แบบ ไปจนถึงระบบบริหารหลายแบรนด์สำหรับเอเจนซี</p>
- </div>
-
- <div class="grid">
-  <div class="card">
-   <span class="tag pk">สำหรับครีเอเตอร์ / เจ้าของช่อง</span>
-   <h2>Mail Creator Demo (6 หน้า)</h2>
-   <p>สัมผัสหน้าตาและวิธีทำงานจริงของแอปเดสก์ท็อป Mail สำหรับบริหารช่องคอนเทนต์ครบวงจร</p>
-   <ul>
-    <li><b>ภาพรวม &amp; กระดิ่งแจ้งเตือน:</b> เป้าหมายช่อง, สิ่งที่ต้องทำ, งานที่กำลังรัน</li>
-    <li><b>ลงคลิปหลายแพลตฟอร์ม:</b> TikTok + Facebook + YouTube ในฟอร์มเดียว</li>
-    <li><b>กล่องคอมเมนต์ &amp; แชทส่วนตัว:</b> รวมแชทและคอมเมนต์ทุกแพลตฟอร์ม</li>
-    <li><b>ตัดคลิป &amp; มาร์เก็ตติ้ง:</b> ตัดแนวตั้ง 2K/1080p และดูกราฟวิเคราะห์ช่อง</li>
-   </ul>
-   <a class="btn" href="./mail/">เปิดทดลอง Mail Creator Demo &rarr;</a>
+<div class="card" id="box">
+ <div class="logo">M</div>
+ <h1>Mail Interactive Demo</h1>
+ <div class="sub">หน้านี้ถูกล็อกด้วยรหัสผ่าน (เข้ารหัส AES-256-GCM)<br>กรอกรหัสผ่านเพื่อเข้าใช้งานเดโม</div>
+ <form id="frm">
+  <div class="inp-w">
+   <input id="pw" type="password" placeholder="กรอกรหัสผ่าน…" autocomplete="current-password" autofocus required>
+   <button type="button" class="eye" id="ey">แสดง</button>
   </div>
-
-  <div class="card">
-   <span class="tag bl">สำหรับเอเจนซี / ทีมดูแลหลายแบรนด์</span>
-   <h2>Mail Agency Demo (7 หน้า)</h2>
-   <p>ต้นแบบเวอร์ชันขายให้เอเจนซีไทย สถาปัตยกรรม Hybrid Web + Local GPU ดูแลลูกค้าหลายแบรนด์พร้อมกัน</p>
-   <ul>
-    <li><b>Multi-Brand Switcher &amp; ปฏิทินข้ามลูกค้า:</b> สลับแบรนด์และเห็นคิวงานทุกช่อง</li>
-    <li><b>Client Approval Portal:</b> สลับโหมดเอเจนซี / ลูกค้า กดอนุมัติหรือคอมเมนต์แก้</li>
-    <li><b>White-Label PDF Report:</b> เปลี่ยนชื่อ/สีเอเจนซีและกดพิมพ์ PDF ได้ทันที</li>
-    <li><b>Crisis Inbox &amp; Live Highlight Finder:</b> เตือนคอมเมนต์วิกฤตและหาไฮไลต์ไลฟ์ขายของ</li>
-   </ul>
-   <a class="btn sec" href="./agency/">เปิดทดลอง Mail Agency Demo &rarr;</a>
-  </div>
-
-  <div class="card">
-   <span class="tag gr">ตัวอย่างกราฟวิเคราะห์ข้อมูล</span>
-   <h2>Analytics Charts Preview</h2>
-   <p>ตัวอย่างกราฟวิเคราะห์เชิงลึกที่ใช้งานจริงในเมนู มาร์เก็ตติ้ง ของแอป Mail</p>
-   <ul>
-    <li><b>Best-Time Heatmap:</b> แผนที่ความร้อนวันและเวลาที่ลงแล้ววิวดีสุด</li>
-    <li><b>Series Comparison:</b> เปรียบเทียบยอดวิวเฉลี่ยของแต่ละซีรีส์คลิป</li>
-    <li><b>Hook vs Views Scatter:</b> จับคู่คะแนนฮุก 3 วินาทีแรกกับยอดวิวรวม</li>
-   </ul>
-   <a class="btn ghost" href="./charts/">เปิดดูตัวอย่างกราฟ &rarr;</a>
-  </div>
- </div>
-
- <div class="info">
-  <div><b>ปลอดภัย 100%</b><span>เว็บนี้เป็นชุดเดโมแบบ Static ใช้ข้อมูลสมมติทั้งหมด ไม่มีการเชื่อมต่อบัญชีจริงหรือส่งข้อความออกภายนอก</span></div>
-  <div><b>ออกแบบเพื่อประหยัดต้นทุน AI</b><span>งานหลักอย่างตัดคลิป ถอดเสียงไทย ดูสถิติ กราฟ และตอบแชท รันบนเครื่องเอง ฟรี 0 โทเคน</span></div>
-  <div><b>เปิดได้ทั้งคอมและมือถือ</b><span>สามารถส่งลิงก์นี้ให้ลูกค้า พาร์ทเนอร์ หรือเอเจนซีทดลองกดดูได้ทันทีทุกอุปกรณ์</span></div>
- </div>
-
- <div class="foot">Mail App Interactive Showcase &middot; Hosted on Netlify</div>
+  <label class="rem"><input type="checkbox" id="rem"> จำรหัสไว้ในเบราว์เซอร์นี้</label>
+  <button type="submit" class="go" id="go">เข้าสู่ระบบ</button>
+ </form>
+ <div class="err" id="err"></div>
+ <div class="foot">Protected with Web Crypto AES-256-GCM &middot; PBKDF2-SHA256</div>
 </div>
+<script>(()=>{
+const P={"i":200000,"s":"phtL9DMamY8QBl7WLgMMLQ==","v":"8dA+Xd9NNh+OuE8/","c":"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"};
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function unlock(pw,save){
+ const err=document.getElementById('err'),go=document.getElementById('go'),box=document.getElementById('box');
+ if(!window.crypto||!crypto.subtle){err.textContent='ต้องเปิดผ่าน HTTPS (เช่น github.io / netlify.app) เพื่อถอดรหัสครับ';return false}
+ err.textContent='';go.disabled=true;go.textContent='กำลังตรวจสอบรหัส…';
+ try{
+  const enc=new TextEncoder();
+  const base=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(P.s),iterations:P.i,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
+  const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(P.v)},key,b64(P.c));
+  const html=new TextDecoder().decode(plain);
+  try{sessionStorage.setItem('mail_demo_pw',pw);if(save)localStorage.setItem('mail_demo_pw',pw)}catch(e){}
+  document.open();document.write(html);document.close();
+  return true;
+ }catch(e){
+  go.disabled=false;go.textContent='เข้าสู่ระบบ';
+  box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');
+  err.textContent='รหัสผ่านไม่ถูกต้อง — ลองใหม่อีกครั้ง';
+  return false;
+ }
+}
+document.getElementById('ey').onclick=()=>{const i=document.getElementById('pw'),b=document.getElementById('ey');const show=i.type==='password';i.type=show?'text':'password';b.textContent=show?'ซ่อน':'แสดง'};
+document.getElementById('frm').onsubmit=e=>{e.preventDefault();unlock(document.getElementById('pw').value,document.getElementById('rem').checked)};
+(async()=>{
+ let saved='';
+ try{saved=sessionStorage.getItem('mail_demo_pw')||localStorage.getItem('mail_demo_pw')||''}catch(e){}
+ if(saved){const ok=await unlock(saved,false);if(!ok){try{sessionStorage.removeItem('mail_demo_pw');localStorage.removeItem('mail_demo_pw')}catch(e){}document.getElementById('err').textContent=''}}
+})();
+})();</script>
 </body>
 </html>
