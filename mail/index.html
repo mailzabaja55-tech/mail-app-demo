@@ -1,0 +1,303 @@
+<title>Mail เดโม</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: Mail's own shell — pink brand block + side menu on the left, page column on the right, bell top-right, job pill bottom-right */
+:root{
+  --bg:#f6f7fb; --panel:#ffffff; --ink:#1f1d2b; --ink-2:#55536a; --muted:#8a889a; --line:#e7e9f0; --soft:#f1f2f7;
+  --pink:#ff6fae; --accent:#e8458b; --accent-soft:#fde9f2; --accent-ink:#b8326f; --on-accent:#ffffff; --brand-ink:#141018;
+  --ok:#1f9d63; --ok-soft:#e3f6ec; --warn:#c77a12; --warn-soft:#fff4e0; --bad:#d63a4a; --bad-soft:#fdecee; --info:#3b78d8;
+  --yt:#ff4e45; --tt:#1fb8c0; --fb:#3b78d8; --ig:#d9529f;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s5:#e87ba4;
+  --f-display:"Kanit","IBM Plex Sans Thai",system-ui,sans-serif; --f-body:"IBM Plex Sans Thai","Noto Sans Thai",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141218; --panel:#1d1a23; --ink:#f1eef6; --ink-2:#c3bfd0; --muted:#8f8a9e; --line:#2e2a37; --soft:#26222e;
+  --accent:#ff6fae; --accent-soft:#3a1d2c; --accent-ink:#ff9cc6; --on-accent:#1a0d14;
+  --ok:#3ccf8e; --ok-soft:#173326; --warn:#f2b45a; --warn-soft:#3a2a12; --bad:#ff6b78; --bad-soft:#3a1a20; --info:#6aa5ff;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s5:#d55181; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141218; --panel:#1d1a23; --ink:#f1eef6; --ink-2:#c3bfd0; --muted:#8f8a9e; --line:#2e2a37; --soft:#26222e;
+  --accent:#ff6fae; --accent-soft:#3a1d2c; --accent-ink:#ff9cc6; --on-accent:#1a0d14;
+  --ok:#3ccf8e; --ok-soft:#173326; --warn:#f2b45a; --warn-soft:#3a2a12; --bad:#ff6b78; --bad-soft:#3a1a20; --info:#6aa5ff;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s5:#d55181; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14.5px;line-height:1.55}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}
+/* side menu */
+nav{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{background:var(--pink);padding:18px 16px;display:flex;gap:12px;align-items:center;color:var(--brand-ink)}
+.logo{width:44px;height:44px;border:3px solid var(--brand-ink);border-radius:10px;display:grid;place-items:center;font-family:"Arial Black",var(--f-display);font-size:22px;font-weight:900;flex:none}
+.brand b{font-family:var(--f-display);font-size:22px;display:block;line-height:1.1;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.15)}
+.brand small{font-size:11.5px;color:#fff;opacity:.92}
+.nsec{padding:14px 18px 4px;font-size:11.5px;font-weight:700;letter-spacing:.4px;color:var(--muted)}
+nav a{display:flex;align-items:center;gap:10px;padding:9px 18px;margin:1px 8px;border-radius:10px;color:var(--ink-2);text-decoration:none;font-size:14.5px;font-weight:500}
+nav a:hover{background:var(--soft)} nav a.on{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+nav a svg{width:19px;height:19px;flex:none}
+.nb{margin-left:auto;background:var(--accent);color:var(--on-accent);border-radius:999px;font-size:11.5px;font-weight:700;min-width:20px;text-align:center;padding:0 7px;line-height:19px}
+.nb.dot{background:var(--warn)}
+.navfoot{margin-top:auto;padding:14px 18px;font-size:12px;color:var(--muted)}
+/* page */
+main{min-width:0;padding-block:24px 80px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.top{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}
+.top h1{font-family:var(--f-display);font-weight:700;font-size:26px;margin:0;text-wrap:balance}
+.top p{margin:2px 0 0;color:var(--ink-2)}
+.demo{display:inline-block;background:var(--warn-soft);color:var(--warn);font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;margin-top:6px}
+.bell{margin-left:auto;position:relative;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);display:grid;place-items:center;flex:none}
+.bell svg{width:21px;height:21px}.bell .n{position:absolute;top:-4px;right:-4px;background:var(--bad);color:#fff;font-size:11px;font-weight:700;border-radius:999px;min-width:19px;line-height:19px;padding:0 5px}
+.bpanel{position:absolute;right:0;top:50px;width:min(340px,86vw);background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 36px rgba(20,16,30,.18);z-index:30;padding:6px 0;text-align:left}
+.bpanel .it{display:flex;gap:10px;padding:9px 14px;border-top:1px solid var(--line);font-size:13.5px;cursor:pointer}.bpanel .it:first-of-type{border-top:0}
+.bpanel .it:hover{background:var(--soft)}
+.lv{width:8px;height:8px;border-radius:50%;flex:none;margin-top:7px;background:var(--info)}.lv.warn{background:var(--warn)}.lv.bad{background:var(--bad)}.lv.ok{background:var(--ok)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;min-width:0}
+.card h3{font-family:var(--f-display);font-weight:500;font-size:17px;margin:0 0 8px}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g2{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.dim{color:var(--muted);font-size:13px}
+.btn{border:0;background:var(--accent);color:var(--on-accent);border-radius:10px;padding:8px 16px;font-weight:600}
+.btn.ghost{background:var(--soft);color:var(--ink)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;border-radius:999px;padding:1px 9px;background:var(--soft);color:var(--ink-2)}
+.pd{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.tile{display:flex;gap:14px;align-items:center;cursor:pointer;position:relative;transition:transform .12s,border-color .12s}
+.tile:hover{transform:translateY(-2px);border-color:var(--accent)}
+.tile .ti{width:48px;height:48px;border-radius:14px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;flex:none}.tile .ti svg{width:24px;height:24px}
+.tile b{font-size:16.5px;display:block}.tile .tb{position:absolute;top:10px;right:12px}
+.kpi .v{font-size:28px;font-weight:700;font-family:var(--f-display);letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--soft);border-radius:3px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.row{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}
+.row .t{flex:1;min-width:0}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* forms */
+label.f{display:grid;gap:4px;font-size:13px;color:var(--ink-2)}
+input[type=text],input[type=datetime-local],textarea,select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%}
+.checks{display:grid;gap:6px}.ck{display:flex;gap:8px;align-items:center;font-size:13.5px}
+.ck .i{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+.ck.ok .i{background:var(--ok-soft);color:var(--ok)}.ck.no .i{background:var(--bad-soft);color:var(--bad)}
+.plats{display:flex;gap:8px;flex-wrap:wrap}.plat{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13.5px;background:var(--panel)}
+.plat[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.plat.off{opacity:.45;cursor:not-allowed}
+/* thumbs */
+.th{border-radius:10px;position:relative;overflow:hidden;color:#fff;font-weight:700;font-size:12px;display:flex;align-items:flex-end;padding:6px 8px;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.th.v{aspect-ratio:9/16}.th.h{aspect-ratio:16/9}
+.th .d{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.6);border-radius:5px;padding:0 5px;font-size:11px;font-weight:500}
+/* inbox / dm */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:14px;align-items:start}
+.list .it{display:flex;gap:10px;padding:11px 12px;border-radius:12px;cursor:pointer;border:1px solid transparent}
+.list .it:hover{background:var(--soft)}.list .it.on{border-color:var(--accent);background:var(--accent-soft)}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none;font-size:14px}
+.unread{font-weight:700}
+.msgs{display:grid;gap:8px;max-height:340px;overflow:auto;padding:4px 2px}
+.msg{max-width:78%;padding:8px 12px;border-radius:16px;background:var(--soft);width:fit-content}
+.msg.me{margin-left:auto;background:var(--accent-soft)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:999px;padding:5px 14px;font-size:13.5px}
+.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+/* cut */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.cc{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;color:var(--ink)}
+.cc:hover{border-color:var(--accent)}.cc.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.cc .t{padding:7px 9px;font-size:12.5px}
+.pv{position:sticky;top:16px}
+.player{aspect-ratio:16/9;border-radius:10px;position:relative;overflow:hidden}
+.player .pl{position:absolute;inset:auto 10px 10px 10px;height:5px;background:rgba(255,255,255,.35);border-radius:3px}.player .pl i{display:block;height:100%;width:34%;background:#fff;border-radius:3px}
+/* marketing charts */
+.mk-p{border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.mk-p svg{display:block;width:100%;height:auto}
+.hb{display:grid;grid-template-columns:minmax(110px,240px) 1fr;gap:6px 12px;align-items:center;font-size:13px}
+.hb .b{height:14px;border-radius:0 4px 4px 0;background:var(--s2)}
+.vb{display:flex;gap:18px;align-items:flex-end;height:170px}
+.vb div{flex:1;max-width:110px;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;font-size:12.5px}
+.vb i{display:block;width:100%;background:var(--s1);border-radius:4px 4px 0 0}
+/* job pill + toast */
+.pill{position:fixed;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));background:var(--panel);border:1.5px solid var(--accent);border-radius:999px;padding:9px 16px 9px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 6px 24px rgba(20,16,30,.16);z-index:40;cursor:pointer;max-width:min(380px,90vw)}
+.sp{width:18px;height:18px;border-radius:50%;border:3px solid var(--accent-soft);border-top-color:var(--accent);flex:none}
+@media (prefers-reduced-motion:no-preference){.sp{animation:spin .8s linear infinite}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pill.done{border-color:var(--ok)}.pill.done .sp{border-color:var(--ok);background:var(--ok);animation:none}
+.pill .pb{height:4px;background:var(--accent-soft);border-radius:3px;margin-top:3px;overflow:hidden}.pill .pb i{display:block;height:100%;background:var(--accent)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:max(24px,env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:12px;font-size:13.5px;z-index:50;max-width:90vw}
+.mtoggle{display:none}
+@media (max-width:980px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}.g2,.split{grid-template-columns:minmax(0,1fr)}.pv{position:static}}
+@media (max-width:720px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  nav{position:fixed;inset:0 auto 0 0;width:250px;z-index:60;transform:translateX(-102%);transition:transform .2s;padding-top:env(safe-area-inset-top,0px)}
+  nav.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.3)}
+  .mtoggle{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);flex:none}
+  main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .g3,.g4{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+
+<div class="app">
+  <nav id="nav" aria-label="เมนู">
+    <div class="brand"><div class="logo">M</div><div><b>Mail</b><small>มาร์เก็ตติ้ง · โตช่อง</small></div></div>
+    <div class="nsec">เมนู</div>
+    <div id="menu"></div>
+    <div class="navfoot">เดโม — ไม่ได้ต่อบัญชีจริง</div>
+  </nav>
+  <main>
+    <div class="top">
+      <button class="mtoggle" id="mtog" aria-label="เปิดเมนู"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div style="min-width:0"><h1 id="ttl"></h1><p id="sub"></p><span class="demo">เดโม · ข้อมูลตัวอย่าง ไม่ใช่ช่องจริง</span></div>
+      <div style="margin-left:auto;position:relative">
+        <button class="bell" id="bell" aria-label="การแจ้งเตือน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="n" id="bn"></span></button>
+        <div class="bpanel" id="bp" hidden></div>
+      </div>
+    </div>
+    <div id="page"></div>
+  </main>
+</div>
+<div class="pill" id="pill" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>n>=1e4?(n/1e3).toFixed(1).replace(/\.0$/,'')+'K':Number(n).toLocaleString('th-TH');
+const IC={home:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',post:'<path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/>',
+ inbox:'<path d="M4 5h16v10H9l-5 4z"/>',dm:'<path d="m3 11 18-8-8 18-2-8z"/>',cut:'<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/>',
+ mk:'<path d="M3 11v2a2 2 0 0 0 2 2h1l5 4V5L6 9H5a2 2 0 0 0-2 2z"/><path d="M16 8a5 5 0 0 1 0 8"/>'};
+const svg=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>`;
+const PL={yt:['YouTube','--yt'],tt:['TikTok','--tt'],fb:['Facebook','--fb'],ig:['Instagram','--ig']};
+const pdot=p=>`<span class="pd" style="background:var(${PL[p][1]})" title="${PL[p][0]}"></span>`;
+const GRAD=['linear-gradient(135deg,#5b2a86,#e8458b)','linear-gradient(135deg,#0f5e6b,#1fb8c0)','linear-gradient(135deg,#7a3b12,#eb6834)','linear-gradient(135deg,#123d7a,#3b78d8)','linear-gradient(135deg,#25502d,#1baf7a)','linear-gradient(135deg,#4a1730,#d9529f)'];
+let toastT;function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2600)}
+
+// ---------- sample data (a made-up gaming channel) ----------
+const S={
+ comments:[
+  {id:1,p:'yt',who:'nong_pim',av:'#e8458b',clip:'ผีโผล่หน้าประตู EP.3',text:'ตกใจแทนเลย 555 ตอนต่อไปเมื่อไหร่คะ',ago:'12 นาที'},
+  {id:2,p:'tt',who:'game_boy99',av:'#1fb8c0',clip:'เพื่อนบอกทางผิด EP.2',text:'เพื่อนผมก็เป็นแบบนี้ ซ้ายบอกขวา',ago:'40 นาที'},
+  {id:3,p:'fb',who:'Kittipong S.',av:'#3b78d8',clip:'แท็กซี่ผี EP.1',text:'ขอเกมนี้อีก',ago:'1 ชม.'},
+  {id:4,p:'yt',who:'mew.mew',av:'#eb6834',clip:'ยิงไม่ทัน! EP.7',text:'ตรงวินาทีที่ 0:12 ฮามาก',ago:'2 ชม.'},
+  {id:5,p:'tt',who:'tonkla_',av:'#1baf7a',clip:'ร้านนี้มีผี EP.2',text:'1 วิ่ง',ago:'3 ชม.'},
+  {id:6,p:'ig',who:'ploy.p',av:'#d9529f',clip:'ถ้าลิ้นยาวขึ้นทุกวินาที',text:'😂😂😂',ago:'5 ชม.'}],
+ dms:[
+  {id:1,p:'tt',who:'game_boy99',av:'#1fb8c0',unread:true,msgs:[['them','พี่ครับ อยากให้เล่นเกมผีภาค 2 ครับ'],['them','จะรอดูนะครับ']]},
+  {id:2,p:'ig',who:'brand.studio',av:'#6250d6',unread:true,msgs:[['them','สวัสดีค่ะ สนใจรีวิวสินค้าไหมคะ'],['them','ส่งรายละเอียดทางอีเมลได้เลยค่ะ']]},
+  {id:3,p:'fb',who:'Kittipong S.',av:'#3b78d8',unread:false,msgs:[['them','ไลฟ์คืนนี้กี่โมงครับ'],['me','สองทุ่มครับ']]}],
+ streams:[['2026-11-16 20-21.mp4','6.6 GB','3:12:40'],['2026-11-13 20-30.mp4','9.3 GB','4:01:05'],['2026-11-12 19-12.mp4','15.0 GB','5:44:18'],['2026-11-11 21-52.mp4','9.6 GB','3:58:02'],['2026-11-10 20-12.mp4','3.4 GB','1:27:33'],['2026-11-09 19-37.mp4','7.8 GB','3:20:51']],
+ next:[['พ 19:00',['tt','fb'],'ลิ้นติดเทอร์โบ'],['พฤ 12:30',['yt'],'เพื่อนบอกทางผิด EP.3'],['พฤ 19:00',['tt','fb','yt'],'แท็กซี่ผี EP.2'],['ศ 14:00',['yt'],'ร้านนี้มีผี EP.3'],['ส 20:00',['yt'],'รวมฉากผีหลอก ภาค 2 (คลิปยาว)']]
+};
+let doneComments=new Set();
+
+// ---------- menu + routing ----------
+const PAGES=[['home','ภาพรวม','สรุปช่อง สิ่งที่ต้องทำ และโพสต์ถัดไป ในหน้าเดียว'],['post','ลงคลิป','ลงทีเดียว TikTok + Facebook + YouTube ตั้งเวลาได้'],
+ ['inbox','กล่องคอมเมนต์','คอมเมนต์จากทุกแพลตฟอร์มในที่เดียว ตอบได้จากตรงนี้'],['dm','แชทส่วนตัว','ข้อความ TikTok · Instagram · Facebook Page · LINE OA'],
+ ['cut','ตัดคลิป','เลือกไลฟ์ ดูตัวอย่าง แล้วตัดเป็นคลิปแนวตั้ง ไม่ต้องใช้โปรแกรมตัดต่อ'],['mk','มาร์เก็ตติ้ง','ไลก์ แชร์ บันทึก และกราฟ แยกตามแพลตฟอร์ม']];
+const badge=k=>k==='inbox'?S.comments.length-doneComments.size:k==='dm'?S.dms.filter(d=>d.unread).length:0;
+function menu(cur){$('menu').innerHTML=PAGES.map(([k,t])=>{const b=badge(k);return `<a href="#${k}" class="${k===cur?'on':''}" ${k===cur?'aria-current="page"':''}>${svg(k)}<span>${t}</span>${b?`<span class="nb">${b}</span>`:''}</a>`}).join('')}
+function bell(){const it=[];const c=badge('inbox'),d=badge('dm');
+ if(c)it.push(['inbox','info',`คอมเมนต์ที่ยังไม่ได้ตอบ ${c} รายการ`]);if(d)it.push(['dm','info',`แชทส่วนตัวที่ยังไม่ได้อ่าน ${d} แชท`]);
+ it.push(['post','warn','คลิปที่จะลงยังไม่มีปก 2 คลิป']);if(JOB&&JOB.done)it.push(['cut','ok','ตัดคลิปเสร็จแล้ว · '+JOB.name]);
+ $('bn').textContent=it.length;$('bn').hidden=!it.length;
+ $('bp').innerHTML=`<div class="dim" style="padding:6px 14px;font-weight:600;color:var(--ink)">การแจ้งเตือน</div>`+it.map(([k,l,t])=>`<div class="it" data-k="${k}"><span class="lv ${l}"></span><span>${E(t)}</span></div>`).join('');
+ $('bp').querySelectorAll('.it').forEach(x=>x.onclick=()=>{$('bp').hidden=true;location.hash=x.dataset.k})}
+$('bell').onclick=e=>{e.stopPropagation();$('bp').hidden=!$('bp').hidden};
+document.addEventListener('click',e=>{if(!$('bp').contains(e.target))$('bp').hidden=true;if(!$('nav').contains(e.target)&&e.target.closest('#mtog')==null)$('nav').classList.remove('open')});
+$('mtog').onclick=()=>$('nav').classList.toggle('open');
+function route(){const k=(location.hash||'#home').slice(1);const pg=PAGES.find(p=>p[0]===k)||PAGES[0];
+ $('ttl').textContent=pg[1];$('sub').textContent=pg[2];menu(pg[0]);bell();$('nav').classList.remove('open');
+ $('page').innerHTML='';({home,post,inbox,dm,cut,mk})[pg[0]]();window.scrollTo(0,0)}
+addEventListener('hashchange',route);
+
+// ---------- ภาพรวม ----------
+function home(){const t=[['cut','ตัดคลิป','ตัดเอง หรือให้หาไฮไลต์อัตโนมัติ'],['post','ลงคลิป','3 แพลตฟอร์มทีเดียว'],['inbox','ตอบคอมเมนต์','ทุกแพลตฟอร์มในที่เดียว']];
+ const k=[['ผู้ติดตาม YouTube',1240,'--yt',[1240,2000]],['ผู้ติดตาม TikTok',3810,'--tt'],['ผู้ติดตาม Facebook',2150,'--fb'],['ผู้ติดตาม Instagram',4470,'--ig']];
+ $('page').innerHTML=`<div class="grid g3">${t.map(([h,b,s])=>`<a class="card tile" href="#${h}" style="text-decoration:none;color:inherit"><span class="ti">${svg(h)}</span><span><b>${b}</b><span class="dim">${s}</span></span>${badge(h)?`<span class="nb tb">${badge(h)}</span>`:''}</a>`).join('')}</div>
+ <div class="grid g4" style="margin-top:14px">${k.map(([l,v,c,g])=>`<div class="card kpi"><div class="dim" style="display:flex;gap:6px;align-items:center"><span class="pd" style="background:var(${c})"></span>${l}</div><div class="v">${fmt(v)}</div>${g?`<div class="dim">เป้า ${fmt(g[1])} · +6.4/วัน · ถึงเป้าประมาณ ก.พ. 2027</div><div class="bar"><i style="width:${100*g[0]/g[1]}%"></i></div>`:'<div class="dim">+38 ใน 7 วัน</div>'}</div>`).join('')}</div>
+ <div class="grid g2" style="margin-top:14px">
+  <div class="card"><h3>สิ่งที่ต้องทำ</h3>
+   ${[['warn','ยังไม่มีปก 2 คลิป — คลิปแรกที่จะลง พฤ 12:30','post','ไปทำปก'],['info',`คอมเมนต์ที่ยังไม่ได้ตอบ ${badge('inbox')} รายการ`,'inbox','ไปตอบ'],['info',`แชทที่ยังไม่ได้อ่าน ${badge('dm')} แชท`,'dm','ไปอ่าน']].map(([l,t,h,b])=>`<div class="row"><span class="lv ${l}"></span><span class="t">${t}</span><a class="btn ghost" href="#${h}" style="text-decoration:none">${b}</a></div>`).join('')}</div>
+  <div class="card"><h3>โพสต์ถัดไป</h3>${S.next.map(([w,p,t])=>`<div class="row"><span style="display:flex;gap:3px">${p.map(pdot).join('')}</span><span style="width:70px;color:var(--ink-2);font-variant-numeric:tabular-nums">${w}</span><span class="t ell">${E(t)}</span><span class="chip">ตั้งเวลาแล้ว</span></div>`).join('')}</div>
+ </div>`}
+
+// ---------- ลงคลิป ----------
+function post(){let sel=new Set(['tt','fb','yt']);
+ $('page').innerHTML=`<div class="grid g2"><div class="card grid" style="gap:12px">
+  <div style="display:flex;gap:14px"><div class="th v" style="width:96px;background:${GRAD[0]}">แท็กซี่ผี EP.2<span class="d">0:28</span></div>
+   <div class="grid" style="gap:8px;flex:1;min-width:0"><label class="f">ไฟล์<input type="text" id="pf" value="taxi_ep2_1080x1920.mp4"></label><label class="f">ชื่อคลิป / แคปชัน<input type="text" id="pt" value="คนขับแท็กซี่ผีพาไปไหน?! 😱 แท็กเพื่อนที่กล้านั่ง"></label></div></div>
+  <div><div class="dim" style="margin-bottom:6px">ลงที่</div><div class="plats" id="pp">${['tt','fb','yt','ig'].map(p=>`<button type="button" class="plat${p==='ig'?' off':''}" data-p="${p}" aria-pressed="${p!=='ig'}" ${p==='ig'?'disabled title="Instagram พักไว้"':''}>${pdot(p)}${PL[p][0]}</button>`).join('')}</div></div>
+  <label class="f">เวลาลง<input type="datetime-local" id="pw" value="2026-11-20T19:00"></label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="pgo">ตั้งเวลาลงคลิป</button><button class="btn ghost" id="pdry">ลองก่อน (ไม่ลงจริง)</button></div></div>
+  <div class="card"><h3>เช็กก่อนลง</h3><div class="checks" id="pc"></div><div class="dim" style="margin-top:10px">ปุ่มลงคลิปจะกดได้เมื่อผ่านทุกข้อ</div></div></div>`;
+ const chk=()=>{const t=$('pt').value.trim(),c=[[/1080x1920/.test($('pf').value),'ขนาดคลิป 1080×1920 (TikTok / Facebook)'],[t.length>0&&t.length<=100,`ชื่อคลิปยาว ${t.length}/100 ตัว (YouTube)`],[!/[<>]/.test(t),'ไม่มีเครื่องหมาย < > ในชื่อ'],[sel.size>0,'เลือกแพลตฟอร์มอย่างน้อย 1 อัน'],[true,'เวลาลงห่างจากตอนนี้เกิน 30 นาที'],[true,'มีปกแล้ว']];
+  $('pc').innerHTML=c.map(([ok,t])=>`<div class="ck ${ok?'ok':'no'}"><span class="i">${ok?'✓':'✕'}</span>${E(t)}</div>`).join('');$('pgo').disabled=!c.every(x=>x[0])};
+ $('pp').onclick=e=>{const b=e.target.closest('.plat');if(!b||b.disabled)return;const p=b.dataset.p;sel.has(p)?sel.delete(p):sel.add(p);b.setAttribute('aria-pressed',sel.has(p));chk()};
+ ['pf','pt'].forEach(i=>$(i).oninput=chk);chk();
+ $('pgo').onclick=()=>toast(`เดโม: ตั้งเวลาลง ${[...sel].map(p=>PL[p][0]).join(' + ')} แล้ว (ไม่ได้ลงจริง)`);$('pdry').onclick=()=>toast('ลองแล้ว: กรอกฟอร์มครบทุกแพลตฟอร์ม ไม่ได้กดลง')}
+
+// ---------- กล่องคอมเมนต์ ----------
+let inF='all',inSel=null;
+function inbox(){const L=S.comments.filter(c=>inF==='all'||c.p===inF);
+ $('page').innerHTML=`<div class="tabs" id="itab">${[['all','ทั้งหมด'],...Object.entries(PL).map(([k,v])=>[k,v[0]])].map(([k,l])=>`<button type="button" data-k="${k}" aria-pressed="${k===inF}">${l}</button>`).join('')}</div>
+ <div class="split"><div class="card list">${L.map(c=>`<div class="it${inSel===c.id?' on':''}" data-id="${c.id}"><span class="av" style="background:${c.av}">${E(c.who[0].toUpperCase())}</span><div style="min-width:0;flex:1"><div style="display:flex;gap:6px;align-items:center">${pdot(c.p)}<b class="ell">${E(c.who)}</b><span class="dim" style="margin-left:auto;white-space:nowrap">${c.ago}</span></div><div class="ell">${E(c.text)}</div><div class="dim ell">ใต้คลิป: ${E(c.clip)}</div></div>${doneComments.has(c.id)?'<span class="chip" style="color:var(--ok)">ตอบแล้ว</span>':''}</div>`).join('')||'<div class="dim">ไม่มีคอมเมนต์</div>'}</div>
+ <div class="card" id="irep"><div class="dim">เลือกคอมเมนต์ทางซ้ายเพื่อตอบ</div></div></div>`;
+ $('itab').onclick=e=>{const b=e.target.closest('button');if(b){inF=b.dataset.k;inbox()}};
+ document.querySelectorAll('.list .it').forEach(x=>x.onclick=()=>{inSel=+x.dataset.id;inbox()});
+ const c=S.comments.find(c=>c.id===inSel);if(!c)return;
+ $('irep').innerHTML=`<h3>ตอบ ${E(c.who)}</h3><div class="dim">${PL[c.p][0]} · ใต้คลิป ${E(c.clip)}</div><div class="msg" style="margin:10px 0">${E(c.text)}</div>
+  <textarea id="itx" rows="3" placeholder="พิมพ์คำตอบ…"></textarea><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">${['ขอบคุณที่ดูครับ 🙏','ตอนต่อไปมาเร็ว ๆ นี้ครับ','แท็กเพื่อนมาดูด้วยนะครับ'].map(s=>`<button class="chip" style="border:0" data-s="${E(s)}">${E(s)}</button>`).join('')}</div>
+  <div style="margin-top:10px;display:flex;gap:8px"><button class="btn" id="isend">ส่งคำตอบ</button><span class="dim" style="align-self:center">ระบบเช็กว่าเป็นบัญชีเรา และคอมเมนต์ตรงตัวก่อนส่ง</span></div>`;
+ $('irep').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>$('itx').value=b.dataset.s);
+ $('isend').onclick=()=>{if(!$('itx').value.trim()){toast('พิมพ์คำตอบก่อน');return}doneComments.add(c.id);inSel=null;inbox();menu('inbox');bell();toast('เดโม: ส่งคำตอบแล้ว (ไม่ได้ส่งจริง)')}}
+
+// ---------- แชทส่วนตัว ----------
+let dmSel=1;
+function dm(){const d=S.dms.find(x=>x.id===dmSel);if(d)d.unread=false;menu('dm');bell();
+ $('page').innerHTML=`<div class="split"><div class="card list">${S.dms.map(x=>`<div class="it${x.id===dmSel?' on':''}" data-id="${x.id}"><span class="av" style="background:${x.av}">${E(x.who[0].toUpperCase())}</span><div style="min-width:0;flex:1"><div style="display:flex;gap:6px;align-items:center">${pdot(x.p)}<span class="ell ${x.unread?'unread':''}">${E(x.who)}</span>${x.unread?'<span class="nb" style="margin-left:auto">ใหม่</span>':''}</div><div class="dim ell">${E(x.msgs[x.msgs.length-1][1])}</div></div></div>`).join('')}</div>
+ <div class="card"><h3>${E(d.who)} <span class="dim">· ${PL[d.p][0]}</span></h3><div class="msgs" id="dmm">${d.msgs.map(([w,t])=>`<div class="msg ${w==='me'?'me':''}">${E(t)}</div>`).join('')}</div>
+ <div style="display:flex;gap:8px;margin-top:10px"><input type="text" id="dtx" placeholder="พิมพ์ข้อความ…"><button class="btn" id="dsend">ส่ง</button></div></div></div>`;
+ document.querySelectorAll('.list .it').forEach(x=>x.onclick=()=>{dmSel=+x.dataset.id;dm()});
+ const send=()=>{const t=$('dtx').value.trim();if(!t)return;d.msgs.push(['me',t]);dm();toast('เดโม: ส่งข้อความแล้ว (ไม่ได้ส่งจริง)')};
+ $('dsend').onclick=send;$('dtx').onkeydown=e=>{if(e.key==='Enter')send()};const m=$('dmm');m.scrollTop=m.scrollHeight}
+
+// ---------- ตัดคลิป + job pill ----------
+let cutSel=0,JOB=null,jobT=null;
+function cut(){const s=S.streams[cutSel];
+ $('page').innerHTML=`<div class="split" style="grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)"><div class="card"><h3>เลือกไฟล์ไลฟ์</h3><div class="dim" style="margin-bottom:10px">ล่าสุดอยู่บน · คลิกเพื่อดูตัวอย่างทางขวา</div>
+  <div class="cgrid">${S.streams.map((x,i)=>`<button class="cc${i===cutSel?' on':''}" data-i="${i}"><div class="th h" style="background:${GRAD[i%6]};border-radius:0">ไลฟ์ ${x[0].slice(5,10)}<span class="d">${x[2]}</span></div><div class="t"><b class="ell" style="display:block">${E(x[0])}</b><span class="dim">${x[1]}</span></div></button>`).join('')}</div></div>
+  <div class="card pv"><div class="player" style="background:${GRAD[cutSel%6]}"><div class="pl"><i></i></div></div><div style="font-weight:700;margin-top:8px">${E(s[0])}</div><div class="dim">1920×1080 · ${s[2]} · ${s[1]}</div>
+  <div class="grid" style="gap:8px;margin-top:12px"><div class="dim">ช่วงที่จะตัด</div><div style="display:flex;gap:8px"><span class="chip">1:02:10 → 1:02:38</span><span class="chip">2:14:05 → 2:14:31</span></div>
+  <label class="ck"><input type="checkbox" id="cpost" checked> ทำไฟล์พร้อมลง TikTok/Facebook ด้วย</label>
+  <button class="btn" id="cgo" ${JOB&&!JOB.done?'disabled':''}>ตัดคลิปนี้</button></div></div></div>`;
+ document.querySelectorAll('.cc').forEach(b=>b.onclick=()=>{cutSel=+b.dataset.i;cut()});
+ $('cgo').onclick=()=>{JOB={name:s[0],pct:0,done:false};runJob()}}
+function runJob(){clearInterval(jobT);pill();jobT=setInterval(()=>{JOB.pct=Math.min(100,JOB.pct+Math.round(3+Math.random()*6));if(JOB.pct>=100){JOB.done=true;clearInterval(jobT);bell();setTimeout(()=>{if(JOB&&JOB.done)$('pill').hidden=true},8000)}pill();if((location.hash||'#home')==='#cut')cut()},700)}
+function pill(){const p=$('pill');if(!JOB){p.hidden=true;return}p.hidden=false;p.className='pill'+(JOB.done?' done':'');
+ const step=JOB.done?'เสร็จแล้ว — กดเพื่อดู':JOB.pct<70?'เรนเดอร์ 2K แนวตั้ง 2 คลิป':'ทำไฟล์พร้อมลง TikTok/Facebook';
+ p.innerHTML=`<span class="sp"></span><span style="min-width:0;display:grid"><b>${JOB.done?'ตัดคลิปเสร็จแล้ว':'กำลังตัดคลิป '+JOB.pct+'%'}</b><span class="dim ell">${step}</span>${JOB.done?'':`<span class="pb"><i style="width:${JOB.pct}%"></i></span>`}</span>`}
+$('pill').onclick=()=>location.hash='cut';
+
+// ---------- มาร์เก็ตติ้ง ----------
+let mkP='tt',mkV='week';
+const MK={tt:{likes:[2440,'▼ 24% จาก 30 วันก่อน'],shares:[118,'▲ +12%'],saves:[96,'▲ +31%'],reposts:null,why:'TikTok Studio ไม่ให้ยอดรีโพสต์'},
+ yt:{likes:[6950,'▲ +8%'],shares:[84,'30 วันก่อน 61'],saves:null,reposts:null,why:'YouTube ไม่เปิดเผยยอดบันทึกและไม่มีรีโพสต์'},
+ ig:{likes:[27240,'▲ +142%'],shares:[1803,'▲ +96%'],saves:[402,'▲ +40%'],reposts:[57,'30 วันก่อน 12']},
+ fb:{likes:null,shares:null,saves:null,reposts:null,why:'แดชบอร์ด Facebook ให้แค่เอนเกจรวม'}};
+function mk(){const D=MK[mkP],M=[['likes','ไลก์','--s1'],['shares','แชร์','--s2'],['saves','บันทึก','--s3'],['reposts','รีโพสต์','--s5']];
+ let seed=mkP.charCodeAt(0)*31;const r=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+ const weeks=[...Array(12)].map((_,i)=>`${String(1+((i*7+3)%28)).padStart(2,'0')}/${i<5?10:11}`);
+ const avail=M.filter(m=>D[m[0]]);
+ const panels=avail.map(([k,l,c])=>{const vals=weeks.map(()=>Math.round(D[k][0]/12*(0.4+r()*1.3))),mx=Math.max(...vals);
+  return `<div class="mk-p"><div style="font-weight:600;font-size:13px">${l} <span class="dim">สูงสุด ${fmt(mx)}</span></div><svg viewBox="0 0 250 90">${vals.map((v,i)=>`<rect x="${4+i*20}" y="${74-62*v/mx}" width="16" height="${Math.max(2,62*v/mx)}" rx="2" fill="var(${c})"><title>สัปดาห์ ${weeks[i]}: ${fmt(v)} ${l}</title></rect>`).join('')}<line x1="0" x2="250" y1="74.5" y2="74.5" stroke="var(--line)"/><text x="4" y="87" font-size="10" fill="var(--muted)">${weeks[0]}</text><text x="246" y="87" font-size="10" fill="var(--muted)" text-anchor="end">${weeks[11]}</text></svg></div>`}).join('');
+ const tops=['แท็กซี่ผี EP.1','ลิ้นติดเทอร์โบ','เพื่อนบอกทางผิด EP.2','ร้านนี้มีผี EP.2','ยิงไม่ทัน! EP.7','ด่านตรวจผี EP.4'].map((t,i)=>[t,Math.round(60/(i+1)+r()*8)]);
+ const lens=[['≤15 วิ',22.3],['16–30 วิ',21.7],['31–60 วิ',19.3],['เกิน 60 วิ',14.1]];
+ $('page').innerHTML=`<div class="tabs" id="mkt">${['tt','fb','yt','ig'].map(p=>`<button type="button" data-p="${p}" aria-pressed="${p===mkP}">${PL[p][0]}</button>`).join('')}</div>
+ <div class="card"><h3>ไลก์ · แชร์ · บันทึก · รีโพสต์</h3><div class="dim">คลิปที่ลงใน 30 วันล่าสุด เทียบ 30 วันก่อนหน้า</div>
+ <div class="grid g4" style="margin-top:10px">${M.map(([k,l,c])=>D[k]?`<div class="card" style="padding:12px 14px"><div class="dim" style="display:flex;gap:6px;align-items:center"><span class="pd" style="background:var(${c})"></span>${l}</div><div class="kpi"><div class="v">${fmt(D[k][0])}</div></div><div class="dim">${D[k][1]}</div></div>`
+  :`<div class="card" style="padding:12px 14px;border-style:dashed"><div class="dim">${l}</div><div class="kpi"><div class="v" style="color:var(--muted)">–</div></div><div class="dim">${E(D.why||'ยังไม่มีข้อมูล')}</div></div>`).join('')}</div>
+ ${avail.length?`<div class="tabs" id="mkv" style="margin-top:16px">${[['week','ยอดรายสัปดาห์'],['top','คลิปที่คนแชร์มากสุด'],['len','ตามความยาวคลิป']].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${k===mkV}">${l}</button>`).join('')}</div>
+ <div ${mkV==='week'?'':'hidden'} class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">${panels}</div>
+ <div ${mkV==='top'?'':'hidden'} class="hb">${tops.map(([t,v])=>`<span class="ell">${E(t)}</span><span style="display:flex;align-items:center;gap:8px"><span class="b" style="width:${70*v/tops[0][1]}%" title="${E(t)}: แชร์ ${v}"></span><span class="dim">${v}</span></span>`).join('')}</div>
+ <div ${mkV==='len'?'':'hidden'} class="vb">${lens.map(([b,v])=>`<div><b>${v}</b><i style="height:${100*v/lens[0][1]}%" title="${b}: ${v} ต่อ 1,000 วิว"></i><span class="dim">${b}</span></div>`).join('')}</div>`:'<div class="dim" style="margin-top:12px">แพลตฟอร์มนี้ยังไม่มีตัวเลขพอทำกราฟ</div>'}</div>`;
+ $('mkt').onclick=e=>{const b=e.target.closest('button');if(b){mkP=b.dataset.p;mk()}};
+ const v=$('mkv');if(v)v.onclick=e=>{const b=e.target.closest('button');if(b){mkV=b.dataset.v;mk()}}}
+
+route();
+})();
+</script>
+<a href="../" style="position:fixed;bottom:14px;left:14px;z-index:9999;background:#1f1d2b;color:#fff;text-decoration:none;font:600 12.5px/1 Segoe UI,Tahoma,sans-serif;padding:8px 13px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:.9">&larr; หน้าหลักเดโม</a>

@@ -1,0 +1,203 @@
+<title>กราฟใหม่ของ Mail</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: one centred column of three chart panels, each = header + controls row + chart + "อ่านยังไง" note; Mail's pink as the accent */
+:root{
+  --bg:#f6f7fb; --panel:#ffffff; --ink:#1f1d2b; --ink-2:#55536a; --muted:#8a889a; --line:#e7e9f0; --grid:#eef0f5;
+  --accent:#e8458b; --accent-soft:#fde9f2; --accent-ink:#b8326f;
+  --s1:#2a78d6; --s3:#1baf7a;                       /* categorical slots 1 + 3 (YouTube, TikTok) */
+  --h0:#fbeef4; --h1:#f6c9dc; --h2:#ee97bd; --h3:#e0609a; --h4:#c13a78; --h5:#8e1f54;   /* sequential, one hue */
+  --warn-bg:#fff4e0; --warn-ink:#9a5a00;
+  --f-display:"Kanit","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai","Noto Sans Thai",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141218; --panel:#1d1a23; --ink:#f1eef6; --ink-2:#c3bfd0; --muted:#8f8a9e; --line:#2e2a37; --grid:#26222e;
+  --accent:#ff6fae; --accent-soft:#3a1d2c; --accent-ink:#ff9cc6; --s1:#3987e5; --s3:#199e70;
+  --h0:#2a1a23; --h1:#4a1f35; --h2:#7a2a52; --h3:#b23c76; --h4:#e2629c; --h5:#ffa3cb;
+  --warn-bg:#3a2a12; --warn-ink:#f2b45a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141218; --panel:#1d1a23; --ink:#f1eef6; --ink-2:#c3bfd0; --muted:#8f8a9e; --line:#2e2a37; --grid:#26222e;
+  --accent:#ff6fae; --accent-soft:#3a1d2c; --accent-ink:#ff9cc6; --s1:#3987e5; --s3:#199e70;
+  --h0:#2a1a23; --h1:#4a1f35; --h2:#7a2a52; --h3:#b23c76; --h4:#e2629c; --h5:#ffa3cb;
+  --warn-bg:#3a2a12; --warn-ink:#f2b45a; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:22px}
+header h1{font-family:var(--f-display);font-weight:700;font-size:clamp(26px,4vw,34px);margin:0;text-wrap:balance;letter-spacing:-.2px}
+header p{margin:6px 0 0;color:var(--ink-2);max-width:65ch}
+.sample{display:inline-flex;align-items:center;gap:6px;background:var(--warn-bg);color:var(--warn-ink);font-size:13px;font-weight:600;border-radius:999px;padding:3px 12px;margin-top:10px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;display:grid;gap:12px;min-width:0}
+.panel h2{font-family:var(--f-display);font-weight:500;font-size:21px;margin:0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.panel h2 small{font-family:var(--f-body);font-size:13px;color:var(--muted);font-weight:400}
+.ctrl{display:flex;gap:6px;flex-wrap:wrap}
+.ctrl button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:999px;padding:5px 14px;cursor:pointer}
+.ctrl button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.ctrl button:focus-visible,.hm-c:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.read{background:var(--accent-soft);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--ink)}
+.read b{color:var(--accent-ink)}
+.scroll{overflow-x:auto;min-width:0}
+/* heatmap */
+.hm{display:grid;grid-template-columns:44px repeat(12,minmax(34px,1fr));gap:3px;min-width:500px;font-variant-numeric:tabular-nums}
+.hm-h{font-size:11.5px;color:var(--muted);text-align:center}
+.hm-d{font-size:13px;color:var(--ink-2);display:flex;align-items:center}
+.hm-c{height:34px;border-radius:6px;cursor:default;position:relative}
+.hm-c.best::after{content:"";position:absolute;inset:-2px;border:2px solid var(--ink);border-radius:8px}
+.legend{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.ramp{display:flex;gap:2px}.ramp i{width:22px;height:10px;border-radius:3px;display:block}
+/* series bars: two small multiples sharing the row labels */
+.sb{display:grid;grid-template-columns:minmax(110px,170px) 1fr 1fr;gap:6px 16px;align-items:center;font-variant-numeric:tabular-nums}
+.sb .hd{font-size:12.5px;color:var(--muted);font-weight:600}
+.sb .nm{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb .nm span{color:var(--muted);font-size:12px}
+.bar{position:relative;height:20px;display:flex;align-items:center;gap:8px}
+.bar i{display:block;height:14px;border-radius:0 4px 4px 0;background:var(--accent)}
+.bar.sh i{background:var(--s1)}
+.bar em{font-style:normal;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+@media (max-width:560px){.sb{grid-template-columns:minmax(90px,1fr) 1fr}.sb .c2{display:none}}
+/* scatter */
+.sc svg{display:block;width:100%;height:auto}
+.sc .ax{fill:var(--muted);font-size:11px;font-family:var(--f-body)}
+.sc .gl{stroke:var(--grid);stroke-width:1}
+.sc .md{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.sc .zone{fill:var(--accent-soft)}
+.sc .zt{fill:var(--accent-ink);font-size:12px;font-weight:600;font-family:var(--f-body)}
+.sc circle{stroke:var(--panel);stroke-width:2}
+.sc circle:hover{stroke:var(--ink)}
+.keys{display:flex;gap:16px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}.keys span{display:flex;align-items:center;gap:6px}.keys i{width:10px;height:10px;border-radius:50%;display:block}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:13px;box-shadow:0 8px 24px rgba(20,16,30,.18);max-width:260px;display:none}
+footer{color:var(--muted);font-size:13px;text-align:center}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .35s ease}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>กราฟใหม่สำหรับหน้ามาร์เก็ตติ้ง</h1>
+    <p>ตัวอย่าง 3 กราฟที่จะเพิ่มในแอป Mail ลองกดปุ่มและชี้เมาส์ดูตัวเลขได้ ถ้าชอบแบบไหน จะทำของจริงด้วยข้อมูลจริงของช่อง</p>
+    <span class="sample">ตัวเลขทั้งหมดในหน้านี้เป็นตัวเลขสมมติ</span>
+  </header>
+
+  <section class="panel" aria-labelledby="t1">
+    <h2 id="t1">วันและเวลาที่ลงแล้วได้วิวดี <small>วิวเฉลี่ยต่อคลิป แยกตามวันและช่วงเวลาที่ลง (ทุก 2 ชม.)</small></h2>
+    <div class="ctrl" id="hmPlat" role="group" aria-label="เลือกแพลตฟอร์ม"></div>
+    <div class="scroll"><div class="hm" id="hm"></div></div>
+    <div class="legend"><span>วิวน้อย</span><span class="ramp" id="ramp"></span><span>วิวมาก</span><span>· กรอบเข้ม = ช่วงที่ดีที่สุด · ช่องจาง = ยังลงช่วงนั้นน้อยกว่า 3 คลิป</span></div>
+    <div class="read" id="hmRead"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t2">
+    <h2 id="t2">ซีรีส์ไหนดีสุด <small>คลิปใน 180 วัน · ซ้ายคือวิวกลางของซีรีส์ ขวาคือแชร์ต่อ 1,000 วิว</small></h2>
+    <div class="ctrl" id="sbSort" role="group" aria-label="เรียงตาม">
+      <button type="button" id="sortV" aria-pressed="true">เรียงตามวิว</button>
+      <button type="button" id="sortS" aria-pressed="false">เรียงตามแชร์</button>
+    </div>
+    <div class="sb" id="sb"></div>
+    <div class="read" id="sbRead"></div>
+  </section>
+
+  <section class="panel sc" aria-labelledby="t3">
+    <h2 id="t3">ฮุกกับวิว <small>1 จุด = 1 คลิป · แกนนอน = % คนที่ยังดูอยู่ที่วินาทีที่ 3 · แกนตั้ง = วิว (สเกลลอการิทึม)</small></h2>
+    <div class="ctrl" id="scPlat" role="group" aria-label="เลือกแพลตฟอร์ม">
+      <button type="button" data-p="all" aria-pressed="true">ทั้งสองแพลตฟอร์ม</button>
+      <button type="button" data-p="yt" aria-pressed="false">YouTube</button>
+      <button type="button" data-p="tt" aria-pressed="false">TikTok</button>
+    </div>
+    <div class="keys"><span><i style="background:var(--s1)"></i>YouTube Shorts</span><span><i style="background:var(--s3)"></i>TikTok</span></div>
+    <div id="sc"></div>
+    <div class="read" id="scRead"></div>
+  </section>
+
+  <footer>เดโมสำหรับ Mail · มาร์เก็ตติ้ง — ตัวเลขสมมติ ไม่ใช่สถิติจริงของช่อง</footer>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+(()=>{
+// ---------- seeded sample data (same picture every load) ----------
+let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+const fmt=n=>n>=1e4?(n/1e3).toFixed(n>=1e5?0:1).replace(/\.0$/,'')+'K':Math.round(n).toLocaleString('th-TH');
+const tip=document.getElementById('tip');
+function showTip(e,html){tip.innerHTML=html;tip.style.display='block';const w=tip.offsetWidth,h=tip.offsetHeight;
+  tip.style.left=Math.max(8,Math.min(innerWidth-w-8,e.clientX+14))+'px';tip.style.top=Math.max(8,Math.min(innerHeight-h-8,e.clientY+16))+'px'}
+const hideTip=()=>{tip.style.display='none'};
+
+// ---------- 1 heatmap ----------
+const DAYS=['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'],SLOTS=[...Array(12)].map((_,i)=>i*2);
+const PLAT={tiktok:{name:'TikTok',peak:[19,21],wk:1.25,base:420},youtube:{name:'YouTube',peak:[13,15],wk:1.1,base:1200},facebook:{name:'Facebook',peak:[19,21],wk:1.35,base:900}};
+const HM={};
+for(const [k,p] of Object.entries(PLAT)){HM[k]=DAYS.map((d,di)=>SLOTS.map(h=>{
+  const evening=Math.exp(-Math.pow((h-p.peak[0])/3.2,2))*1.6+Math.exp(-Math.pow((h-p.peak[1])/2.6,2))*0.9;
+  const night=h<6?0.25:1,weekend=di>=5?p.wk:1;const v=p.base*(0.35+evening)*night*weekend*(0.8+rnd()*0.45);
+  const n=h<8?Math.floor(rnd()*3):Math.floor(2+rnd()*9);return {v,n}}))}
+const RAMP=['--h0','--h1','--h2','--h3','--h4','--h5'];
+document.getElementById('ramp').innerHTML=RAMP.map(c=>`<i style="background:var(${c})"></i>`).join('');
+let hmP='tiktok';
+const hmPlat=document.getElementById('hmPlat');
+hmPlat.innerHTML=Object.entries(PLAT).map(([k,p])=>`<button type="button" data-p="${k}" aria-pressed="${k===hmP}">${p.name}</button>`).join('');
+hmPlat.onclick=e=>{const b=e.target.closest('button');if(!b)return;hmP=b.dataset.p;hmPlat.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawHM()};
+function drawHM(){const G=HM[hmP],all=G.flat().filter(c=>c.n>=3),mx=Math.max(...all.map(c=>c.v)),mn=Math.min(...all.map(c=>c.v));
+  let best=null;G.forEach((r,di)=>r.forEach((c,si)=>{if(c.n>=3&&(!best||c.v>best.v))best={...c,di,si}}));
+  let h='<div></div>'+SLOTS.map(s=>`<div class="hm-h">${String(s).padStart(2,'0')}:00</div>`).join('');
+  G.forEach((r,di)=>{h+=`<div class="hm-d">${DAYS[di]}</div>`+r.map((c,si)=>{const t=(c.v-mn)/(mx-mn||1),step=Math.max(0,Math.min(5,Math.round(t*5)));
+    const isBest=best&&best.di===di&&best.si===si;
+    return `<div class="hm-c${isBest?' best':''}" tabindex="0" style="background:var(${RAMP[step]});opacity:${c.n>=3?1:.35}" data-t="${DAYS[di]} ${String(SLOTS[si]).padStart(2,'0')}:00–${String(SLOTS[si]+2).padStart(2,'0')}:00|${fmt(c.v)}|${c.n}"></div>`}).join('')});
+  const el=document.getElementById('hm');el.innerHTML=h;
+  el.querySelectorAll('.hm-c').forEach(c=>{const [w,v,n]=c.dataset.t.split('|');
+    const html=`<b>${w}</b><br>วิวเฉลี่ย ${v} ต่อคลิป<br><span style="color:var(--muted)">จาก ${n} คลิป</span>`;
+    c.onmousemove=e=>showTip(e,html);c.onmouseleave=hideTip;c.onfocus=()=>{const r=c.getBoundingClientRect();showTip({clientX:r.right,clientY:r.top},html)};c.onblur=hideTip});
+  const slot=`${String(SLOTS[best.si]).padStart(2,'0')}:00–${String(SLOTS[best.si]+2).padStart(2,'0')}:00`;
+  document.getElementById('hmRead').innerHTML=`ช่วงที่ดีที่สุดของ ${PLAT[hmP].name} คือ <b>${DAYS[best.di]} ${slot}</b> วิวเฉลี่ย ${fmt(best.v)} ต่อคลิป · ใช้ช่วงนี้เป็นเวลาตั้งลงคลิปหลักในปฏิทิน`}
+drawHM();
+
+// ---------- 2 series ----------
+const SER=[['What-if',38,1],['Roblox',62,.55],['Valorant',41,.62],['ด่านตรวจผี',9,.9],['ร้านนี้มีผี',8,.8],['Hand Overs',17,.75],['GTA V',33,.35],['แท็กซี่ผี',7,.6],['Dead by Daylight',21,.4],['Sea of Thieves',14,.3]]
+  .map(([name,n,q])=>({name,n,views:Math.round((300+rnd()*700)*(0.6+q*2.4)),share:+((0.4+rnd()*1.2)*(0.5+q*2)).toFixed(1)}));
+let sortBy='views';
+const sortV=document.getElementById('sortV'),sortS=document.getElementById('sortS');
+sortV.onclick=()=>{sortBy='views';sortV.setAttribute('aria-pressed','true');sortS.setAttribute('aria-pressed','false');drawSB()};
+sortS.onclick=()=>{sortBy='share';sortS.setAttribute('aria-pressed','true');sortV.setAttribute('aria-pressed','false');drawSB()};
+function drawSB(){const L=[...SER].sort((a,b)=>b[sortBy]-a[sortBy]),mv=Math.max(...L.map(s=>s.views)),ms=Math.max(...L.map(s=>s.share));
+  let h='<div class="hd">ซีรีส์</div><div class="hd">วิวกลางต่อคลิป</div><div class="hd c2">แชร์ต่อ 1,000 วิว</div>';
+  for(const s of L)h+=`<div class="nm" title="${s.name}">${s.name} <span>${s.n} คลิป</span></div>
+    <div class="bar" data-t="<b>${s.name}</b><br>วิวกลาง ${fmt(s.views)} ต่อคลิป · ${s.n} คลิป"><i style="width:${78*s.views/mv}%"></i><em>${fmt(s.views)}</em></div>
+    <div class="bar sh c2" data-t="<b>${s.name}</b><br>แชร์ ${s.share} ครั้ง ต่อ 1,000 วิว"><i style="width:${78*s.share/ms}%"></i><em>${s.share}</em></div>`;
+  const el=document.getElementById('sb');el.innerHTML=h;
+  el.querySelectorAll('.bar').forEach(b=>{b.onmousemove=e=>showTip(e,b.dataset.t);b.onmouseleave=hideTip});
+  const tv=[...SER].sort((a,b)=>b.views-a.views)[0],ts=[...SER].sort((a,b)=>b.share-a.share)[0];
+  const quiet=SER.filter(s=>s.n<10).sort((a,b)=>b.share-a.share)[0];
+  document.getElementById('sbRead').innerHTML=`วิวดีสุด <b>${tv.name}</b> · คนแชร์ต่อวิวมากสุด <b>${ts.name}</b> · <b>${quiet.name}</b> มีแค่ ${quiet.n} คลิปแต่คนแชร์เยอะ น่าทำเพิ่ม`}
+drawSB();
+
+// ---------- 3 scatter ----------
+const NAMES={yt:['Valorant EP:','Roblox EP:','Hand Overs EP:','What-if EP:','GTA V EP:','Sea of Thieves RE:'],tt:['ด่านตรวจผี EP.','แท็กซี่ผี EP.','Roblox EP:','Valorant EP:','What-if EP:','ร้านนี้มีผี EP.']};
+const PTS=[];
+for(const p of ['yt','tt'])for(let i=0;i<46;i++){const hook=p==='yt'?0.18+rnd()*0.62:0.2+rnd()*0.5;
+  const base=p==='yt'?260:180;let views=base*Math.exp(hook*4.2+(rnd()-.5)*2.2);if(rnd()<.06)views*=0.15;
+  PTS.push({p,hook,views:Math.max(40,views),title:NAMES[p][i%6]+(1+((i*7)%30))})}
+let scP='all';
+const scPlat=document.getElementById('scPlat');
+scPlat.onclick=e=>{const b=e.target.closest('button');if(!b)return;scP=b.dataset.p;scPlat.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawSC()};
+const median=a=>{const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+function drawSC(){const P=PTS.filter(d=>scP==='all'||d.p===scP),W=900,H=420,m={l:56,r:18,t:16,b:44};
+  const x0=.1,x1=.9,ly0=Math.log10(30),ly1=Math.log10(Math.max(...PTS.map(d=>d.views))*1.3);
+  const X=v=>m.l+(v-x0)/(x1-x0)*(W-m.l-m.r),Y=v=>H-m.b-(Math.log10(v)-ly0)/(ly1-ly0)*(H-m.t-m.b);
+  const mh=median(P.map(d=>d.hook)),mv=median(P.map(d=>d.views));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กราฟจุด ฮุกกับวิว">`;
+  s+=`<rect class="zone" x="${X(mh)}" y="${Y(mv)}" width="${W-m.r-X(mh)}" height="${H-m.b-Y(mv)}" rx="6"></rect>`;
+  s+=`<text class="zt" x="${W-m.r-10}" y="${H-m.b-10}" text-anchor="end">ฮุกดีแต่วิวน้อย — ลองเปลี่ยนเวลาลง / ปก / แคปชัน</text>`;
+  for(const t of [.2,.3,.4,.5,.6,.7,.8])s+=`<line class="gl" x1="${X(t)}" x2="${X(t)}" y1="${m.t}" y2="${H-m.b}"></line><text class="ax" x="${X(t)}" y="${H-m.b+18}" text-anchor="middle">${Math.round(t*100)}%</text>`;
+  for(const v of [100,1000,10000,100000])if(Math.log10(v)<=ly1)s+=`<line class="gl" x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}"></line><text class="ax" x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${fmt(v)}</text>`;
+  s+=`<line class="md" x1="${X(mh)}" x2="${X(mh)}" y1="${m.t}" y2="${H-m.b}"></line><line class="md" x1="${m.l}" x2="${W-m.r}" y1="${Y(mv)}" y2="${Y(mv)}"></line>`;
+  s+=`<text class="ax" x="${X(mh)+6}" y="${m.t+12}">ค่ากลางฮุก ${Math.round(mh*100)}%</text><text class="ax" x="${W-m.r}" y="${Y(mv)-6}" text-anchor="end">ค่ากลางวิว ${fmt(mv)}</text>`;
+  s+=`<text class="ax" x="${(m.l+W-m.r)/2}" y="${H-6}" text-anchor="middle">% คนที่ยังดูอยู่ที่วินาทีที่ 3</text>`;
+  P.forEach((d,i)=>{s+=`<circle cx="${X(Math.min(x1,Math.max(x0,d.hook)))}" cy="${Y(d.views)}" r="6" fill="var(${d.p==='yt'?'--s1':'--s3'})" data-i="${PTS.indexOf(d)}"></circle>`});
+  s+='</svg>';const el=document.getElementById('sc');el.innerHTML=s;
+  el.querySelectorAll('circle').forEach(c=>{const d=PTS[+c.dataset.i];const html=`<b>${d.title}</b> · ${d.p==='yt'?'YouTube':'TikTok'}<br>ฮุก ${Math.round(d.hook*100)}% · ${fmt(d.views)} วิว`;
+    c.onmousemove=e=>showTip(e,html);c.onmouseleave=hideTip});
+  const lost=P.filter(d=>d.hook>mh&&d.views<mv).sort((a,b)=>b.hook-a.hook);
+  document.getElementById('scRead').innerHTML=`<b>${lost.length} คลิป</b> ฮุกดีกว่าค่ากลางแต่วิวต่ำกว่าค่ากลาง (โซนสีชมพู) เช่น <b>${lost.slice(0,2).map(d=>d.title).join(', ')}</b> · คลิปพวกนี้คนที่ได้เห็นดูต่อ แต่ถูกส่งให้คนเห็นน้อย ลองลงซ้ำช่วงเวลาที่ดีกว่า หรือเปลี่ยนปก`}
+drawSC();
+})();
+</script>
+<a href="../" style="position:fixed;bottom:14px;left:14px;z-index:9999;background:#1f1d2b;color:#fff;text-decoration:none;font:600 12.5px/1 Segoe UI,Tahoma,sans-serif;padding:8px 13px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:.9">&larr; หน้าหลักเดโม</a>
