@@ -1,4 +1,4 @@
-# Mail Web App (v1.27.0)
+# Mail Web App (v1.29.28)
 
-Full 23-page encrypted web snapshot of the **Mail** desktop application.
-All pages and data bundles are encrypted client-side with **AES-256-GCM (PBKDF2-HMAC-SHA256, 200k iterations)**.
+Encrypted web snapshot of the Mail desktop app with 21 menu pages and a Media Kit.
+The snapshot uses AES-256-GCM with a key derived by PBKDF2-HMAC-SHA256 (200,000 iterations).
